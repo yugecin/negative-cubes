@@ -44,6 +44,12 @@ vec2 neg(vec3 p)
 	return m(r, vec2(left, MAT_LEF));
 }
 
+	/*
+	blu
+	p.xy *= rot2(tt);
+	p.xy = mod(p.xy, 2.) - 1.;
+	*/
+
 vec2 blu(vec3 p)
 {
 	p.x += tt;
@@ -81,8 +87,8 @@ vec4 march(vec3 ro, vec3 rd)
 {
 	float b,dist;
 	vec4 r = vec4(0);
-	for (i = 0; i < 100; i++){
-		gHitPosition = ro + rd * r.z;
+	for (i = 0; i < 300; i++){
+		gHitPosition = ro + rd * r.z*.8;
 		vec2 m = map(gHitPosition);
 		dist = m.x;
 		if (dist < .0001) {
