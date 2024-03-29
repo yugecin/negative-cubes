@@ -194,7 +194,7 @@ void WinMainCRTStartup(void)
 			lastRenderedFrameRunningTimeMs = runningTimeMs;
 			frameIndex++;
 		}
-	} while (!GetAsyncKeyState(VK_ESCAPE) && frameIndex < 5);
+	} while (!GetAsyncKeyState(VK_ESCAPE) && uniformValues[2] < 9424.7 /*3*PI*/);
 done:
 	ExitProcess(0);
 }
