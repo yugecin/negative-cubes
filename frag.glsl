@@ -69,9 +69,11 @@ vec2 map(vec3 p)
 
 	//p.yz *= rot2(3.1415/4.);
 
-	float x = tt/3./PI;
-	p.x += mix(.0,SIZE+.1,x);
-	p.y += mix(.0,SIZE-.22,x);
+	float x = tt/2./PI;
+	//p.x += mix(.0,SIZE+.1,x);
+	//p.y += mix(.0,(SIZE-.22)/2.,x);
+	p.y += mix(.0,-.87,x);
+	p.x += mix(.0,-.24,x);
 
 	return isneg ? neg(p) : blu(p);
 }
@@ -134,7 +136,7 @@ out vec4 c;
 in vec2 v;
 void main()
 {
-	tt = mod(iTime, 3.*PI);
+	tt = mod(iTime, 2.*PI);
 	isneg = tt >= PI;
 	vec2 normuv = (v + 1.) / 2;
 
