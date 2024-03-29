@@ -34,10 +34,13 @@ vec2 neg(vec3 p)
 	p.yz *= rot2(ttt);
 	float box = length(max(abs(p)-vec3(.5),0.));
 	float right = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(1.,1.,-1.))));
+	float right2 = max(box, -dot(p-vec3(0.,0.,.5),normalize(vec3(1.,-1.,1.))));
 	vec2 r = vec2(right, MAT_RIG);
-	float mid = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(-1.,-1.,1.))));
-	mid = max(mid, -dot(p-vec3(-.5,0.,0.),normalize(vec3(1.,0.,0.))));
+	float mid = box;
+	mid = max(mid, -dot(p-vec3(0.,0.,-.5),normalize(vec3(-1.,-1.,1.))));
+	mid = max(mid, -dot(p-vec3(0.,0.,.5),normalize(vec3(-1.,1.,-1.))));
 	r = m(r, vec2(mid, MAT_MID));
+	r = m(r, vec2(right2, MAT_RIG));
 	return r;
 }
 
