@@ -22,7 +22,7 @@ vec2 m(vec2 b, vec2 a){return a.x<b.x?a:b;}
 
 float tt = 0.;
 bool isneg = false;
-vec3 realblu = vec3(101.,101.,190.)/255.;
+vec3 realblu = pow(vec3(101.,101.,190.)/255.,vec3(1./.4545));
 
 vec2 neg(vec3 p)
 {
@@ -104,12 +104,12 @@ vec3 getmat(vec4 r, vec3 normal)
 	vec3 p = gHitPosition.xyz;
 	switch (int(r.w)) {
 	case MAT_BLU: return vec3(.2,.2,.8);
-	case MAT_RIG: return vec3(86.,86.,161.)/255.;
+	case MAT_RIG: return pow(vec3(86.,86.,161.)/255.,vec3(1./.4545));
 	case MAT_MID: {
 		if (normal.x < normal.y && normal.x < normal.z) {
 			return realblu;
 		}
-		return vec3(230.)/255.;
+		return pow(vec3(230.)/255.,vec3(1./.4545));
 	}
 	}
 	return vec3(1.);
@@ -189,6 +189,6 @@ void main()
 	resultcol /= 4.;
 #endif
 
-	if (!isneg) resultcol = pow(resultcol, vec3(.4545));
+	resultcol = pow(resultcol, vec3(.4545));
 	c = vec4(resultcol, 1.0);
 }
