@@ -36,8 +36,7 @@ vec2 neg(vec3 p)
 	float right = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(1.,1.,-1.))));
 	vec2 r = vec2(right, MAT_RIG);
 	float mid = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(-1.,-1.,1.))));
-	vec3 schel = vec3(-.499,0.,0.);
-	mid = max(mid, -dot(p-schel,normalize(vec3(1.,0.,0.))));
+	mid = max(mid, -dot(p-vec3(-.5,0.,0.),normalize(vec3(1.,0.,0.))));
 	r = m(r, vec2(mid, MAT_MID));
 	return r;
 }
