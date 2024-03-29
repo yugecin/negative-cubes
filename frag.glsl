@@ -9,7 +9,6 @@ layout (location=2) uniform vec4 debug[2]; //noexport
 #define MAT_BLU 1
 #define MAT_RIG 2
 #define MAT_MID 3
-#define MAT_LEF 4
 int i;
 vec3 gHitPosition = vec3(0);
 float PI = acos(-1.);
@@ -38,10 +37,9 @@ vec2 neg(vec3 p)
 	vec2 r = vec2(right, MAT_RIG);
 	float mid = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(-1.,-1.,1.))));
 	vec3 schel = vec3(-.499,0.,0.);
-	float left = max(mid, -dot(p-schel,normalize(vec3(-1.,0.,0.))));
 	mid = max(mid, -dot(p-schel,normalize(vec3(1.,0.,0.))));
 	r = m(r, vec2(mid, MAT_MID));
-	return m(r, vec2(left, MAT_LEF));
+	return r;
 }
 
 	/*
@@ -87,7 +85,7 @@ vec4 march(vec3 ro, vec3 rd)
 {
 	float b,dist;
 	vec4 r = vec4(0);
-	for (i = 0; i < 300; i++){
+	for (i = 0; i < 100; i++){
 		gHitPosition = ro + rd * r.z*.8;
 		vec2 m = map(gHitPosition);
 		dist = m.x;
@@ -102,14 +100,18 @@ vec4 march(vec3 ro, vec3 rd)
 	return r;
 }
 
-vec3 getmat(vec4 r)
+vec3 getmat(vec4 r, vec3 normal)
 {
 	vec3 p = gHitPosition.xyz;
 	switch (int(r.w)) {
 	case MAT_BLU: return vec3(.2,.2,.8);
 	case MAT_RIG: return vec3(86.,86.,161.)/255.;
-	case MAT_MID: return vec3(230.)/255.;
-	case MAT_LEF: return realblu;
+	case MAT_MID: {
+		if (normal.x < normal.y && normal.x < normal.z) {
+			return realblu;
+		}
+		return vec3(230.)/255.;
+	}
 	}
 	return vec3(1.);
 }
@@ -179,7 +181,7 @@ void main()
 
 			if (result.x > 0.) { // hit
 				vec3 normal = norm(gHitPosition, result.y);
-				col = colorHit(result, rd, normal, getmat(result));
+				col = colorHit(result, rd, normal, getmat(result, normal));
 			}
 			resultcol += col;
 #if doAA == 1
