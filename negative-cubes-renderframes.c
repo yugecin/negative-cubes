@@ -1,12 +1,17 @@
 
 #define messages // so it doesn't freeze when clicking (unnecessary but ok)
 #define nopopup // then screenshot works :^) (when also using "registerclass" and "messages")
-#define XRES 640 // as per compo rules
-#define YRES 360 // as per compo rules
+// output resolution, this will be cropped from bottom left. ensure this isn't bigger than what gl renders :)
+#define OUTPUTW 640 // as per compo rules (this should be multiple of 4 for bmp export to work in the way I made it)
+#define OUTPUTH 360 // as per compo rules
+// window resolution, this should be bigger than OUTPUTW/H because it includes the window chrome (thanks, winapi)
+#define XRES 1024
+#define YRES 576
 
 #define WIN32_LEAN_AND_MEAN
 #define WIN32_EXTRA_LEAN
 #include "windows.h"
+#include "fileapi.h"
 #include <GL/gl.h>
 #include <GL/glext.h>
 char *vsh=
@@ -22,6 +27,49 @@ char *vsh=
 "}"
 ;
 #include "frag.glsl.c"
+
+void writeframebmp(int frameIndex)
+{
+	static char pixels[OUTPUTW*OUTPUTH*3];
+	char fname[20];
+	HANDLE *hFile;
+	int tmp;
+
+	for (int i = 0; i < 16; i++) fname[i] = "FRAMES/FXXX.BMP"[i];
+	fname[8] = '0' + frameIndex / 100;
+	fname[9] = '0' + (frameIndex % 100) / 10;
+	fname[10] = '0' + (frameIndex % 10);
+	glReadPixels(0, 0, OUTPUTW, OUTPUTH, GL_BGR, GL_UNSIGNED_BYTE, pixels);
+	hFile = CreateFileA(fname, GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	WriteFile(hFile, "BM", 2, 0, 0);
+	tmp = 14+40+OUTPUTW*OUTPUTH*3;
+	WriteFile(hFile, &tmp, 4, 0, 0); // total file size
+	WriteFile(hFile, "YUGE", 4, 0, 0);
+	tmp = 14+40;
+	WriteFile(hFile, &tmp, 4, 0, 0); // pixel array offset
+	tmp = 40;
+	WriteFile(hFile, &tmp, 4, 0, 0); // DIB header size
+	tmp = OUTPUTW;
+	WriteFile(hFile, &tmp, 4, 0, 0); // width
+	tmp = OUTPUTH;
+	WriteFile(hFile, &tmp, 4, 0, 0); // height
+	tmp = 1;
+	WriteFile(hFile, &tmp, 2, 0, 0); // color planes
+	tmp = 24;
+	WriteFile(hFile, &tmp, 2, 0, 0); // bpp
+	tmp = 0;
+	WriteFile(hFile, &tmp, 4, 0, 0); // BI_RGB
+	tmp = OUTPUTW * OUTPUTH * 3;
+	WriteFile(hFile, &tmp, 4, 0, 0); // bitmap data zise
+	tmp = 0;
+	WriteFile(hFile, &tmp, 4, 0, 0); // print size w
+	tmp = 0;
+	WriteFile(hFile, &tmp, 4, 0, 0); // print size h
+	WriteFile(hFile, &tmp, 4, 0, 0); // num colors
+	WriteFile(hFile, &tmp, 4, 0, 0); // important colors
+	WriteFile(hFile, pixels, sizeof(pixels), 0, 0);
+	CloseHandle(hFile);
+}
 
 PIXELFORMATDESCRIPTOR pfd={
 	0, 1, PFD_SUPPORT_OPENGL|PFD_DOUBLEBUFFER, 32, 0, 0, 0,
@@ -46,7 +94,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 void WinMainCRTStartup(void)
 {
 	char log[1024];
-	int logsize;
+	int logsize, frameIndex;
 	MSG msg;
 	RECT rect;
 
@@ -143,14 +191,16 @@ void WinMainCRTStartup(void)
 			GetClientRect(hWnd, &rect);
 			uniformValues[0] = rect.right;
 			uniformValues[1] = rect.bottom;
-			uniformValues[3] = runningTimeMs;
+			uniformValues[2] = frameIndex * 1000.0f/60.0f;
 			((PFNGLPROGRAMUNIFORM4FVPROC)wglGetProcAddress("glProgramUniform4fv"))(s, 0, 2, uniformValues);
 			glRecti(1,1,-1,-1);
 			glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, rect.right, rect.bottom, 0);
+			writeframebmp(frameIndex);
 			SwapBuffers(hDC);
 			lastRenderedFrameRunningTimeMs = runningTimeMs;
+			frameIndex++;
 		}
-	} while (!GetAsyncKeyState(VK_ESCAPE));
+	} while (!GetAsyncKeyState(VK_ESCAPE) && frameIndex < 5);
 done:
 	ExitProcess(0);
 }
