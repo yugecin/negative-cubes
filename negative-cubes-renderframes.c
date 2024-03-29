@@ -167,11 +167,6 @@ void WinMainCRTStartup(void)
 		MessageBoxA(NULL, log, "hi", MB_OK);
 		ExitProcess(1);
 	}
-	((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"))(GL_TEXTURE0); // TODO: seems to work without, remove?
-	glGenTextures(1, &glHandleTmp);
-	glBindTexture(GL_TEXTURE_2D, glHandleTmp);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	launchTimeMs = GetTickCount();
 	do
@@ -194,7 +189,6 @@ void WinMainCRTStartup(void)
 			uniformValues[2] = frameIndex * 1000.0f/60.0f;
 			((PFNGLPROGRAMUNIFORM4FVPROC)wglGetProcAddress("glProgramUniform4fv"))(s, 0, 2, uniformValues);
 			glRecti(1,1,-1,-1);
-			glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, rect.right, rect.bottom, 0);
 			writeframebmp(frameIndex);
 			SwapBuffers(hDC);
 			lastRenderedFrameRunningTimeMs = runningTimeMs;
