@@ -7,8 +7,9 @@ layout (location=0) uniform vec4 fpar[2];
 layout (location=2) uniform vec4 debug[2]; //noexport
 #define MAT_GROUND 0
 #define MAT_BLU 1
-#define MAT_RIG 2
-#define MAT_MID 3
+#define MAT_DBL 2
+#define MAT_WHI 3
+#define MAT_NEW 4
 int i;
 vec3 gHitPosition = vec3(0);
 float PI = acos(-1.);
@@ -24,6 +25,80 @@ float tt = 0.;
 bool isneg = false;
 vec3 realblu = pow(vec3(101.,101.,190.)/255.,vec3(1./.4545));
 
+float sdBox( vec3 p, vec3 b )
+{
+  vec3 q = abs(p) - b;
+  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+}
+
+float neg2x(vec3 p)
+{
+	float box = length(max(abs(p)-vec3(.5),0.));
+	//float box = sdBox(p,vec3(.5));
+
+	float one = box;
+	one = max(one, -dot(p-vec3(0.,0.,0.),normalize(vec3(1.,-1.,0.))));
+	one = max(one, -dot(p-vec3(0.,0.,0.),normalize(vec3(-1.,-1.,0.))));
+	one = max(one, -dot(p-vec3(0.,0.,0.),normalize(vec3(0.,1.,-1.))));
+	return one;
+}
+
+vec2 neg2(vec3 p)
+{
+	float ttt = tt - PI;
+	//p.xy += 1.;
+	p.x += SIZE * .25;
+	p.z -= ttt;
+	p.xy = mod(p.xy, 2.) - 1.;
+	p.yz *= rot2(ttt);
+	float box = sdBox(p,vec3(.5)); //length(max(abs(p)-vec3(.5),0.));
+
+	vec3 q;
+	q = p;
+	vec2 r = vec2(neg2x(q), MAT_WHI);
+	q = p; q.xy *= rot2(PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.xy *= rot2(PI);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.xy *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.xz *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_BLU));
+	q = p; q.xz *= rot2(-PI/2.); q.xy *= rot2(PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_BLU));
+	q = p; q.xz *= rot2(-PI/2.); q.xy *= rot2(PI);
+	r = m(r, vec2(neg2x(q), MAT_BLU));
+	q = p; q.xz *= rot2(-PI/2.); q.xy *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_BLU));
+	q = p; q.yz *= rot2(PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.yz *= rot2(PI/2.); q.xy *= rot2(PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.yz *= rot2(PI/2.); q.xy *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.yz *= rot2(PI/2.); q.xy *= rot2(PI);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.yz *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.yz *= rot2(-PI/2.); q.xy *= rot2(PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.yz *= rot2(-PI/2.); q.xy *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.yz *= rot2(-PI/2.); q.xy *= rot2(PI);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.yz *= rot2(PI);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.yz *= rot2(PI); q.xy *= rot2(-PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_WHI));
+	q = p; q.yz *= rot2(PI); q.xy *= rot2(PI/2.);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+	q = p; q.yz *= rot2(PI); q.xy *= rot2(PI);
+	r = m(r, vec2(neg2x(q), MAT_DBL));
+
+	return r;
+}
+
+/*
 vec2 neg(vec3 p)
 {
 	float ttt = tt - PI;
@@ -35,14 +110,15 @@ vec2 neg(vec3 p)
 	float box = length(max(abs(p)-vec3(.5),0.));
 	float right = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(1.,1.,-1.))));
 	float right2 = max(box, -dot(p-vec3(0.,0.,.5),normalize(vec3(1.,-1.,1.))));
-	vec2 r = vec2(right, MAT_RIG);
+	vec2 r = vec2(right, MAT_DBL);
 	float mid = box;
 	mid = max(mid, -dot(p-vec3(0.,0.,-.5),normalize(vec3(-1.,-1.,1.))));
 	mid = max(mid, -dot(p-vec3(0.,0.,.5),normalize(vec3(-1.,1.,-1.))));
-	r = m(r, vec2(mid, MAT_MID));
-	r = m(r, vec2(right2, MAT_RIG));
+	r = m(r, vec2(mid, MAT_WHI));
+	r = m(r, vec2(right2, MAT_DBL));
 	return r;
 }
+*/
 
 	/*
 	blu
@@ -75,7 +151,7 @@ vec2 map(vec3 p)
 	p.y += mix(.0,-.87,x);
 	p.x += mix(.0,-.24,x);
 
-	return isneg ? neg(p) : blu(p);
+	return isneg ? neg2(p) : blu(p);
 }
 
 vec3 norm(vec3 p, float dist_to_p)
@@ -89,8 +165,8 @@ vec4 march(vec3 ro, vec3 rd)
 {
 	float b,dist;
 	vec4 r = vec4(0);
+	gHitPosition = ro;
 	for (i = 0; i < 100; i++){
-		gHitPosition = ro + rd * r.z*.8;
 		vec2 m = map(gHitPosition);
 		dist = m.x;
 		if (dist < .0001) {
@@ -100,6 +176,7 @@ vec4 march(vec3 ro, vec3 rd)
 			break;
 		}
 		r.z += dist;
+		gHitPosition += rd * dist*.4;
 	}
 	return r;
 }
@@ -109,13 +186,9 @@ vec3 getmat(vec4 r, vec3 normal)
 	vec3 p = gHitPosition.xyz;
 	switch (int(r.w)) {
 	case MAT_BLU: return vec3(.2,.2,.8);
-	case MAT_RIG: return pow(vec3(86.,86.,161.)/255.,vec3(1./.4545));
-	case MAT_MID: {
-		if (normal.x < normal.y && normal.x < normal.z) {
-			return realblu;
-		}
-		return pow(vec3(230.)/255.,vec3(1./.4545));
-	}
+	case MAT_DBL: return pow(vec3(86.,86.,161.)/255.,vec3(1./.4545));
+	case MAT_WHI: return vec3(.8);
+	case MAT_NEW: return pow(vec3(1.,0.,0.),vec3(1./.4545));
 	}
 	return vec3(1.);
 }
@@ -124,8 +197,7 @@ vec3 colorHit(vec4 result, vec3 rd, vec3 normal, vec3 mat)
 {
 	vec3 lig = normalize(vec3(.3,.45,-3.));
 	vec3 adj = mat * .3 * 4. * clamp(dot(normal, lig), .0, 1.);
-	if (!isneg) return adj;
-	return mat;
+	return adj;
 	/*
 	vec3 lig = normalize(vec3(0.,0.,1.));
 	return mat * (4. + clamp(dot(normal, lig), 0., 1.) * .5);
@@ -179,7 +251,7 @@ void main()
 #endif //noexport
 			//vec3 rd = rdbase*normalize(vec3(uv,1))
 			vec3 col = isneg ? realblu : vec3(.8);
-			ro = vec3(uv*10.,-90.), rd=vec3(0.,0.,1.);
+			ro = vec3(uv*3.,-90.), rd=vec3(0.,0.,1.);
 
 			vec4 result = march(ro, rd);
 
