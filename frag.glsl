@@ -143,7 +143,7 @@ vec4 march(vec3 ro, vec3 rd)
 	float b,dist;
 	vec4 r = vec4(0);
 	gHitPosition = ro;
-	for (i = 0; i < 100; i++){
+	for (i = 0; i < 500; i++){
 		vec2 m = map(gHitPosition);
 		dist = m.x;
 		if (dist < .0001) {
@@ -153,7 +153,7 @@ vec4 march(vec3 ro, vec3 rd)
 			break;
 		}
 		r.z += dist;
-		gHitPosition += rd * dist*.4;
+		gHitPosition += rd * dist*.8;
 	}
 	return r;
 }
@@ -235,6 +235,10 @@ void main()
 			if (result.x > 0.) { // hit
 				vec3 normal = norm(gHitPosition, result.y);
 				col = colorHit(result, rd, normal, getmat(result, normal));
+
+				// idk why but if I increase march steps (which I have to get
+				// rid of artifacts), the background when neg turns black??
+				if (col.x<.1&&col.y<.1&&col.z<.1) col = realblu;
 			}
 			resultcol += col;
 #if doAA == 1
