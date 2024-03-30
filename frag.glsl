@@ -5,11 +5,12 @@
 layout (location=0) uniform vec4 fpar[2];
 #define iTime fpar[0].z/1000.
 layout (location=2) uniform vec4 debug[2]; //noexport
-#define MAT_GROUND 0
-#define MAT_BLU 1
-#define MAT_DBL 2
-#define MAT_WHI 3
-#define MAT_NEW 4
+#define MAT_BLU 0
+#define MAT_DB_RB 1
+#define MAT_WH_RB 2
+#define MAT_LB_LB 3
+#define MAT_DB_TP 4
+#define MAT_WH_TP 5
 int i;
 vec3 gHitPosition = vec3(0);
 float PI = acos(-1.);
@@ -55,70 +56,48 @@ vec2 neg2(vec3 p)
 
 	vec3 q;
 	q = p;
-	vec2 r = vec2(neg2x(q), MAT_WHI);
+	vec2 r = vec2(neg2x(q), MAT_WH_RB);
 	q = p; q.xy *= rot2(PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_RB));
 	q = p; q.xy *= rot2(PI);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_RB));
 	q = p; q.xy *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_RB));
 	q = p; q.xz *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_BLU));
+	r = m(r, vec2(neg2x(q), MAT_LB_LB));
 	q = p; q.xz *= rot2(-PI/2.); q.xy *= rot2(PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_BLU));
+	r = m(r, vec2(neg2x(q), MAT_LB_LB));
 	q = p; q.xz *= rot2(-PI/2.); q.xy *= rot2(PI);
-	r = m(r, vec2(neg2x(q), MAT_BLU));
+	r = m(r, vec2(neg2x(q), MAT_LB_LB));
 	q = p; q.xz *= rot2(-PI/2.); q.xy *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_BLU));
+	r = m(r, vec2(neg2x(q), MAT_LB_LB));
 	q = p; q.yz *= rot2(PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_TP));
 	q = p; q.yz *= rot2(PI/2.); q.xy *= rot2(PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_TP));
 	q = p; q.yz *= rot2(PI/2.); q.xy *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_TP));
 	q = p; q.yz *= rot2(PI/2.); q.xy *= rot2(PI);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_TP));
 	q = p; q.yz *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_TP));
 	q = p; q.yz *= rot2(-PI/2.); q.xy *= rot2(PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_TP));
 	q = p; q.yz *= rot2(-PI/2.); q.xy *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_TP));
 	q = p; q.yz *= rot2(-PI/2.); q.xy *= rot2(PI);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_TP));
 	q = p; q.yz *= rot2(PI);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_RB));
 	q = p; q.yz *= rot2(PI); q.xy *= rot2(-PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_WHI));
+	r = m(r, vec2(neg2x(q), MAT_WH_RB));
 	q = p; q.yz *= rot2(PI); q.xy *= rot2(PI/2.);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_RB));
 	q = p; q.yz *= rot2(PI); q.xy *= rot2(PI);
-	r = m(r, vec2(neg2x(q), MAT_DBL));
+	r = m(r, vec2(neg2x(q), MAT_DB_RB));
 
 	return r;
 }
-
-/*
-vec2 neg(vec3 p)
-{
-	float ttt = tt - PI;
-	//p.xy += 1.;
-	p.x += SIZE * .25;
-	p.z -= ttt;
-	p.xy = mod(p.xy, 2.) - 1.;
-	p.yz *= rot2(ttt);
-	float box = length(max(abs(p)-vec3(.5),0.));
-	float right = max(box, -dot(p-vec3(0.,0.,-.5),normalize(vec3(1.,1.,-1.))));
-	float right2 = max(box, -dot(p-vec3(0.,0.,.5),normalize(vec3(1.,-1.,1.))));
-	vec2 r = vec2(right, MAT_DBL);
-	float mid = box;
-	mid = max(mid, -dot(p-vec3(0.,0.,-.5),normalize(vec3(-1.,-1.,1.))));
-	mid = max(mid, -dot(p-vec3(0.,0.,.5),normalize(vec3(-1.,1.,-1.))));
-	r = m(r, vec2(mid, MAT_WHI));
-	r = m(r, vec2(right2, MAT_DBL));
-	return r;
-}
-*/
 
 	/*
 	blu
@@ -186,9 +165,11 @@ vec3 getmat(vec4 r, vec3 normal)
 	vec3 p = gHitPosition.xyz;
 	switch (int(r.w)) {
 	case MAT_BLU: return vec3(.2,.2,.8);
-	case MAT_DBL: return pow(vec3(86.,86.,161.)/255.,vec3(1./.4545));
-	case MAT_WHI: return vec3(.8);
-	case MAT_NEW: return pow(vec3(1.,0.,0.),vec3(1./.4545));
+	case MAT_DB_RB: return pow(vec3(86.,86.,161.)/255.*1.25,vec3(1./.4545));
+	case MAT_WH_RB: return vec3(.8)*1.5;
+	case MAT_LB_LB: return vec3(.2,.2,.8)*1.4;
+	case MAT_DB_TP: return pow(vec3(86.,86.,161.)/255.*1.25,vec3(1./.4545));
+	case MAT_WH_TP: return vec3(.8)*1.5;
 	}
 	return vec3(1.);
 }
