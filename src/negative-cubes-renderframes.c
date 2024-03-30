@@ -186,7 +186,7 @@ void WinMainCRTStartup(void)
 			GetClientRect(hWnd, &rect);
 			uniformValues[0] = rect.right;
 			uniformValues[1] = rect.bottom;
-			uniformValues[2] = frameIndex * 1000.0f/60.0f;
+			uniformValues[2] = frameIndex * 1000.0f/31.415f;
 			((PFNGLPROGRAMUNIFORM4FVPROC)wglGetProcAddress("glProgramUniform4fv"))(s, 0, 2, uniformValues);
 			glRecti(1,1,-1,-1);
 			writeframebmp(frameIndex);
@@ -194,7 +194,7 @@ void WinMainCRTStartup(void)
 			lastRenderedFrameRunningTimeMs = runningTimeMs;
 			frameIndex++;
 		}
-	} while (!GetAsyncKeyState(VK_ESCAPE) && uniformValues[2] < 9424.7 /*3*PI*/);
+	} while (!GetAsyncKeyState(VK_ESCAPE) && uniformValues[2] < 2*3.141592*1000 - 32.0 /*subtract one frame because then it's more perfect*/);
 done:
 	ExitProcess(0);
 }
