@@ -46,7 +46,7 @@ vec2 neg2(vec3 p)
 {
 	float ttt = tt - PI;
 	//p.xy += 1.;
-	p.x += SIZE * .25;
+	p.x += SIZE * .25 + .015;
 	p.z -= ttt;
 	p.xy = mod(p.xy, 2.) - 1.;
 	p.yz *= rot2(ttt);
@@ -125,8 +125,8 @@ vec2 map(vec3 p)
 	float x = tt/2./PI;
 	//p.x += mix(.0,SIZE+.1,x);
 	//p.y += mix(.0,(SIZE-.22)/2.,x);
-	p.y += mix(.0,-.87,x);
-	p.x += mix(.0,-.24,x);
+	p.y += mix(.0,-.86,x);
+	p.x += mix(.0,-.268,x);
 
 	return isneg ? neg2(p) : blu(p);
 }
