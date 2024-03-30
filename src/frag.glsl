@@ -109,7 +109,7 @@ vec2 blu(vec3 p)
 	p.xy = mod(p.xy, 2.) - 1.;
 	//p.xz *= rot2(tt);
 	p.xy *= rot2(tt);
-	return vec2(length(max(abs(p)-vec3(.5),0.)), MAT_BLU);
+	return vec2(length(max(abs(p)-vec3(.492),0.)), MAT_BLU);
 }
 
 vec2 map(vec3 p)
