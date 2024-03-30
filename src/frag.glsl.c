@@ -134,7 +134,7 @@ static char *fragSource =
 "switch (int(r.w)) {"
 "case MAT_BLU: return vec3(.2,.2,.8);"
 "case MAT_DB: return pow(vec3(86.,86.,161.)/255.*1.25,vec3(1./.4545));"
-"case MAT_WH: return vec3(.8)*1.5;"
+"case MAT_WH: return vec3(.8)*1.57;"
 "case MAT_LB: return vec3(.2,.2,.8)*1.4;"
 "}"
 "return vec3(1.);"
