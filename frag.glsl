@@ -146,14 +146,14 @@ vec4 march(vec3 ro, vec3 rd)
 	for (i = 0; i < 500; i++){
 		vec2 m = map(gHitPosition);
 		dist = m.x;
-		if (dist < .0001) {
+		if (dist < .001) {
 			r.x = float(i)/float(200); // TODO: this can just be 1. if not using flopine shade
 			r.y = dist;
 			r.w = m.y;
 			break;
 		}
 		r.z += dist;
-		gHitPosition += rd * dist*.8;
+		gHitPosition += rd * dist * .4;
 	}
 	return r;
 }
