@@ -144,16 +144,16 @@ vec4 march(vec3 ro, vec3 rd)
 	vec4 r = vec4(0);
 	gHitPosition = ro;
 	for (i = 0; i < 500; i++){
+		gHitPosition = ro + rd * r.z;
 		vec2 m = map(gHitPosition);
-		dist = m.x;
-		if (dist < .001) {
+		dist = m.x * .8;
+		if (dist < (isneg ? .001 : .01)) {
 			r.x = float(i)/float(200); // TODO: this can just be 1. if not using flopine shade
 			r.y = dist;
 			r.w = m.y;
 			break;
 		}
 		r.z += dist;
-		gHitPosition += rd * dist * .4;
 	}
 	return r;
 }
@@ -228,7 +228,7 @@ void main()
 #endif //noexport
 			//vec3 rd = rdbase*normalize(vec3(uv,1))
 			vec3 col = isneg ? realblu : vec3(.8);
-			ro = vec3(uv*3.,-90.), rd=vec3(0.,0.,1.);
+			ro = vec3(uv*10.,-90.), rd=vec3(0.,0.,1.);
 
 			vec4 result = march(ro, rd);
 
