@@ -1,7 +1,7 @@
 static char *fragSource =
 "\n#version 430\n"
 "#define debugmov 0\n"
-"#define doAA 0\n"
+"#define doAA 1\n"
 "layout (location=0) uniform vec4 fpar[2];"
 "\n#define iTime fpar[0].z/1000.\n"
 "#define MAT_BLU 0\n"

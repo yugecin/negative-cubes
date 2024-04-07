@@ -1,0 +1,31 @@
+//// negative cubes
+
+released in the Revision 2024 Animated GIF compo
+
+same negative space concept from a 2d shader I made 5 years ago, but now 3d.
+more dimensions = more awesome except I can't get the lighting right :(
+
+Special thanks to Seven for teaching me a quick hack to get rid
+of some artifact problems I was having while
+on the Luxembourg - Saarbrooklyn bus
+
+GLSL shader, custom Crinkler-linked program to render frames,
+ffmpeg to combine frames into GIF
+
+fuckings to those who pulled the emergency brake on our train yesterday
+
+greetings to Bongo, Aurora, Kris :)
+
+////
+
+credits and thanks:
+- Crinkler
+- "Demo-Framework-4k" by iq, for learning me the basics of setting up GL
+- the open source "chocolux" demo by auld, for learning me the basics of setting up GL
+- iq's articles on sdfs
+- Flopine & evvvvil for the seminar about shader coding given at Revision 2019
+- all shader artists on shadertoy etc, because reading your code really helps
+
+//// eof
+
+- yugecin / RBBS

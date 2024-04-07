@@ -1,7 +1,7 @@
 #version 430
 #define debugmov 0
 #define shadertoy 0 //noexport
-#define doAA 0
+#define doAA 1
 layout (location=0) uniform vec4 fpar[2];
 #define iTime fpar[0].z/1000.
 layout (location=2) uniform vec4 debug[2]; //noexport
