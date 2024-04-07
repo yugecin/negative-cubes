@@ -94,7 +94,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 void WinMainCRTStartup(void)
 {
 	char log[1024];
-	int logsize, frameIndex;
+	int logsize, frameIndex = 0;
 	MSG msg;
 	RECT rect;
 
